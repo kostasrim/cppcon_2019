@@ -111,7 +111,6 @@
 		  <li> Name Taxonomy </li>
 		  <li> Templates and ADL </li>
 		  <li> Customization Points and Customization Point Objects(CPO) </li>
-		  <li> Tips && discussion </li>
 		</ul>
 	      </h5>
 	  </section>
@@ -127,12 +126,13 @@
 	    <p style="font-size:18px">
 	      <ul style="font-size:18px">
 		<li> Software Engineer at Codeplay </li>
+		<!-- 
 		<li> Working on ComputeCpp; Codeplay implementation of SYCL Khronos Group Open Standard </li>
 		<li> What is SYCL?
 		  <ul style="font-size:18px";>		
 	            <li> Programming model that enables heterogeneous systems programming in single source C++ </li>
 		  </ul>
-		</li>
+		</li> -->
 		<li> I encourage questions -- just raise your hand! </li>
 		<li> Feel free to reach me out -- I am an easy going person </li>
 		<!-- Why I am here? Teaching because... Please feel free to catch up with me....  -->
@@ -166,7 +166,7 @@
               <li> Papers: P0934, P0846 </li>
 	      <li> Arthur O'Dwyer blogposts </li>
 	      <li> Real life: code that I developed </li>
-	      <li> Libraries I used. E.g. ranges TS, nlohmann::JSON </li>
+	      <li> Libraries I interacted with. E.g. ranges TS, nlohmann::JSON </li>
 	    </ol>
 	  </p>
 	  </section>	  
@@ -204,22 +204,22 @@
 	    Q: Do we need ADL? </br>
             A: Yes, mainly for the following reasons:
             <ul style="font-size:18px">
-	      <li> A call to an operator would need to be explicit(i.e. it would look like a normal function  
-		call) which defeats the purpose of operator overloading all together </li>
-	      <li> Unlike Java, C++ has non member functions and sometimes these functions are 
+	      <li> A call to an operator would need to be explicit </li> <!--(i.e. it would look like a normal function  
+		call) which defeats the purpose of operator overloading all together -->
+	      <li> C++ has non member functions </li> <!--  and sometimes these functions are 
 		part of a type’s interface. For a class object, we always know that the entity we refer
 		to has a set of member functions which are defined in the encolsing scope of that
 		particular class type. Therefore, we need a mechanism for associating non member
-		functions that are a part of the type’s interface.
+		functions that are a part of the type’s interface. -->
 		<!--- 
 		Herb Sutter and Andrei 	Alexandrescu established the interface principle which essential comes down to two items:
 		<ul style="font-size:18px">
 		  <li> 57. Keep a type and its nonmember function interface in the same namespace.</li>
 		  <li> 58. Keep types and functions in separate namespaces unless they’re specifically intended to work together. </li>
 		</ul> -->
-	      <li> Templates. As we shall see, templates undergo a process called two phase lookup which is ADL is fundamental.
+	      <li> Templates </li> <!-- As we shall see, templates undergo a process called two phase lookup which is ADL is fundamental.
 	           Without it, the usability of templates would be greatly reduced.
-		   On the contrary, uncostrained templates can be the source of weird errors(ADL bites). </li>
+		   On the contrary, uncostrained templates can be the source of weird errors(ADL bites). </li> -->
 	    </ul>
 	    </p>
 	  </section>
@@ -312,7 +312,7 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> Unqualified names are looked up in subsequent enclosing scopes. This is called ordinary unqualified lookup. In addition
+		  <li> Unqualified names are looked up in subsequent enclosing scopes. This is called unqualified lookup. In addition
 		    to that, unqualified names “sometimes” undergo an extra step, the argument dependent lookup(ADL) </li>
 		  <li> It's a two step process where the second step is optional </li> 
 		  <li> Fortunately, it's easy to explain this with two sets: Let U be the set produced by the unqualified lookup
@@ -323,11 +323,11 @@
 
 	    <section>
 	      <h5 style="font-size:32px" align="center">
-		Step 1: ordinary unqualified lookup 
+		Step 1: unqualified lookup 
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> Perform the ordinary lookup by looking up in subsequent enclosing scopes. For example: </li>
+		  <li> Perform the unqualified lookup by looking up in subsequent enclosing scopes. For example: </li>
 		</ul>
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
@@ -372,8 +372,8 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> Let U be the set produced by (U)nqualified lookup and A the set produced by (A)rgument dependent lookup
-		If U contains:
+		  <li> Let U be the set produced by (U)nqualified lookup and A the set produced by (A)DL
+		    If U contains:
 		<ul style="font-size:18px">
 		  <li> A declaration of a class member </li>
 		  <li> A block scope function declaration </li>
@@ -451,7 +451,7 @@
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
 		  <li> E { lib_type, user_type } and N { L, U } </li>
-		  <li> Step 1. Ordinary lookup finds nothing X is empty </li>
+		  <li> Step 1. Unqualified lookup finds nothing X is empty </li>
 		  <li> Step 2. ADL finds { <code>L::f()</code>, <code>U::f()</code> } </li>
 		  <li> Therefore, it’s ambiguous by the overload resolution!</li>
 		</ul>
@@ -686,7 +686,7 @@
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
 		  <li> Non dependent names (unqualified or qualified) are looked up with the rules we described </li> 
-		  <li> Unqualified dependent names are looked up using the ordinary lookup rules but they are not complete
+		  <li> Unqualified dependent names are looked up using the unqualified lookup rules but they are not complete
 		    until the point of instantiation(POI) of the template. When the template is instantiated, unqualified
 		    dependent names undergo an ADL. For example: </li>
 		</ul>		
@@ -715,10 +715,10 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> In 1994, it used to be the case that in-class friend
+		  <!-- History here: In 1994, it used to be the case that in-class friend
 		    definitions were injected into the outerclosing namespace,
 		    a process known as friend-name-injection(Barton–Nackman trick) which was later
-		    replaced by ADL </li>
+		    replaced by ADL </li> -->
 		  <li> Dependent friends can be found by ADL. For example: </li> 
 		</ul>		
 	      </p>
@@ -765,7 +765,7 @@
 		  using my_type = std::shared_pointer<lib::cont>;
 
 		  void tie(my_type const& t1, my_type const& t2) {
-		    std::cout << "ADL please pick me!\n";
+		    std::cout << "Unqualified look up finds me but...\n";
 		  }
 
 		  void oups() {
@@ -781,7 +781,7 @@
 	      </code></pre>	
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> Ordinary lookup finds <code>user::tie</code>. O is {user::tie} </li>
+		  <li> Unqualified lookup finds <code>user::tie</code>. O is {user::tie} </li>
 		  <li> ADL finds <code>std::tie</code>. A is {std::tie} </li>
 		  <li> Overload resolution resolves <code>std::tie</code> as a better match </li>
 		</ul>		
@@ -794,9 +794,7 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> Iterators is the glue between algorithms and containers </li>
-		  <li> It allows the user to treat algorithms as sequencies, without worrying
-		    about the underline implementation. But there is more! </li>
+		  <!-- provide the general idea -->
 		  <li> The following attempt might lead to surprises </li>
 		</ul>		
 	      </p>
@@ -860,8 +858,7 @@
 		      <li> 58. Keep types and functions in separate namespaces unless they’re specifically intended to work together. </li>
 		    </ul>
 		  </li>
-		  <li> When using standard algorithms,
-		       always prefix with std </li>
+		  <li> Think twice for unqualified calls to functions that accept iterator arguments </li>
 		  <li> T.47: Avoid highly visible unconstrained templates with common names </li>
 		  <li> C.168 Define overloaded operators in the namespace of their operands. Follows the interface principle </li>
 		</ul>		
@@ -874,7 +871,7 @@
 	  <section> 
 	    <section>
 	      <h5 style="font-size:32px" align="center">
-		When generic code doesn't quite cut it: customization Points and where to find them
+		When generic code doesn't quite cut it: customization Points
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
@@ -888,7 +885,7 @@
 		  <li> A library must assert:
 		    <ul style="font-size:18px">
 		      <li> General cases are covered intuitevly </li>
-		      <li> Delegate the behaviour to the user when required. The hook point </li>
+		      <li> Delegate the behaviour to the user when required. The hooking point </li>
 		    </ul>
 		  </li>
 		</ul>		
@@ -913,37 +910,19 @@
   
 		  int m_i;
 		};
-
-		struct RandomIntGenerator {
-		  inline static auto seed = std::random_device();
-		  inline static auto gen = std::default_random_engine(seed());
-		  inline static auto dist = std::uniform_int_distribution&lt;int&gt;(1, 12);
-
-		  int operator()() {
-		    return dist(gen);
-		  };
-		};
 	      </code></pre>	
 	    </section>
 
 	    <section>
 	      <pre><code class="c++" align="left" style="font-size:18px" data-trim data-noescape>
 		void fill_random_input(std::vector&lt;MyType&gt;& vec) {
-		  RandomIntGenerator generate_int;
-
-		  auto callable = [&](MyType& obj) -&gt; decltype(obj) {
-				    obj.m_i = generate_int();
-				    return obj;
-				  };
-
-		  using std::begin;
-		  using std::end;
-		  std::transform(begin(vec), end(vec), begin(vec), callable);
+		  // Fill the vector with random numbers 
+		  // Impl details here...
 		}
 
 		/*
 		void swap(MyType& a, MyType& b) {
-		std::cout &lt;&lt; "Customize me!\n";
+		  std::cout &lt;&lt; "hook\n";
 		} */
 
 		void customization_point_story_teller() {
@@ -956,9 +935,9 @@
 		  using std::begin;
 		  using std::end;
 
-		  pretty_print(v1, v2);
-		  std::swap_ranges(begin(v1), end(v1), begin(v2)); 
-		  pretty_print(v1, v2);
+		  //print v1 v2
+		  std::swap_ranges(begin(v1), end(v1), begin(v2));
+		  //print v1 v2
 		}
 	      </code></pre>	
 	    </section>
@@ -968,8 +947,10 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
+		  <!-- a library solution for a language feature problem -- Thanks Chris ;) -->
+		  <li> It's a design pattern </li>
 		  <li> Customization point objects are function objects that perform ADL
-		       on users behalf </li>
+		    on users behalf </li>
 		</ul>		
 	      </p>
 	    </section>
