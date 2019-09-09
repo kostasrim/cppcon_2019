@@ -91,7 +91,7 @@
     <div class="reveal">
       <div class="slides">
 	<section>
-	  <!--ADL a thorougg introduction in name taxonomy-->
+	  <!--ADL a thorough introduction in name taxonomy-->
     	  <section>
 	    <h5 style="font-size:32px" align="left">
 		ADL: a thorough introduction in name taxonomy, customization points and use cases in the context of templates
@@ -161,7 +161,7 @@
 	    </h5>
 	  <p>
 	    <ol style="font-size:18px">
-	      <li> Templates: the complete guide </li>
+	      <li> Templates: The Complete Guide </li>
               <li> The C++ standard  </li>
               <li> Papers: P0934, P0846 </li>
 	      <li> Arthur O'Dwyer blogposts </li>
@@ -170,8 +170,20 @@
 	    </ol>
 	  </p>
 	  </section>	  
+
+	  <section>
+	    <p>
+	      <h5 style="font-size:32px" align="center">
+		Many thanks to...
+	      </h5>
+	      <ul style="font-size:18px">
+		<li> Arthur O'Dwyer </li>	      
+		<li> Christopher Di Bella </li>
+		<li> Matt Godbolt </li>
+	      </ul>
+	    </p>
+	  </section>
 	</section>
-	 
 	<!-- History, when and why ADL-->
 	<section>
 	  <section>
@@ -233,7 +245,10 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> We will be dealing with functions and function templates </li>
+		  <!-- <li> We will be dealing with functions and function templates </li> -->
+		  <li> Why name taxonomy is important? </li>
+		  <li> A name can be: qualified, unqualified, dependent and non dependent </li>
+		  <!-- 
 		  <li> Name taxonomy is important because it allows the programmer to reason about their code and make
 		    non intuitive cases clear and easy to understand/argue about </li>
 		  <li> Essentially, when the compiler sees a name, it must look it up somehow. The process of looking
@@ -241,8 +256,8 @@
 		  <li> The standard defines name taxonomy in a non intutive way. But we can’t rely on the standard for
 		    a day to day programming. We can hopefully get away for the most cases by understanding the following 4
 		    categories </li> 
-		  <li> A name can be one of the four(or a mix): qualified, unqualified, dependent and non-dependent </li>
-		</ul>
+		  <li> A name can be one of the four(or a mix): qualified, unqualified, dependent and non-dependent </li>      </li> -->
+		</ul> 
 	      </p>
 	    </section>
 
@@ -277,31 +292,31 @@
 		<p style="font-size:18px" align="left"> Template? Dependent or Nondependent </p>
 	      </div>	      	      
 	    </section>
-
+	    
 	    <section>
 	      <h5 style="font-size:32px" align="center">
-		Qualified names 
+		Qualified name lookup
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul style="font-size:18px"> <!-- 
 		  <li> A qualified name is when an entity is referred to and prefixed with one of the following:
 		    <ul style="font-size:18px">
 		      <li> Scope resolution operator <code>scope::name</code> </li>
 		      <li> Member access operator <code>obj.member</code> and <code>obj&rarr;member</code> </li>
-		    </ul> </li>
+		    </ul> </li> -->
 		  <li> The lookup scope is the scope implied by the qualified construct. For example: </li>
 		</ul>
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
-		int foo;
-		
 		struct  X {
 		  void f() { };
 		}
-		  
+
+		void g() { };
+		
 		void f(X a) {
 		  a.f();
-		  X::foo = 45;  //Error no foo in X
+		  a.g();  //Error no foo in X
 		}
 	      </code></pre>
 	    </section>
@@ -312,11 +327,14 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
+		  <li> Two step process </li>
+		  <li> Lookup sets: U for unqualified lookup and A for ADL </li>
+<!--		  
 		  <li> Unqualified names are looked up in subsequent enclosing scopes. This is called unqualified lookup. In addition
 		    to that, unqualified names “sometimes” undergo an extra step, the argument dependent lookup(ADL) </li>
 		  <li> It's a two step process where the second step is optional </li> 
 		  <li> Fortunately, it's easy to explain this with two sets: Let U be the set produced by the unqualified lookup
-		    and A be the set produced by the argument dependent lookup. </li>
+		    and A be the set produced by the argument dependent lookup. </li> -->
 		</ul>
 	      </p>
 	    </section>	      
@@ -331,7 +349,6 @@
 		</ul>
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
-		int foo;
 		struct  X {
 		  int foo() { };
 
@@ -342,7 +359,6 @@
 
 		void my_fun() { };
 		void g(X a) {
-		  foo = 4;  //Ok assigns to ::foo
 		  f();      //Diagnostic: no f found
 		  my_fun(); //ok ::my_fun() called
 		}
@@ -361,14 +377,14 @@
 		      <li> Set E (associated entities) </li>
 		    </ul>
 		    typedefs and using-declarations do not! contribute to this set  </li>
-		  <li> There are 7 ADL rules you need to remember but first... </li>
+		  <!-- <li> There are 7 ADL rules you need to remember but first... </li> -->
 		</ul>
 	      </p>
 	    </section>
 	    
 	    <section> 
 	      <h5 style="font-size:32px" align="center">
-		Picking up the right name
+		Picking up the right name(s)
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
@@ -388,7 +404,9 @@
 	      <h5 style="font-size:32px" align="center">
 		The 7 rules of ADL
 	      </h5>
-	      <p style="font-size:18px" align="left">
+	      <p style="font-size:18px" align="center">
+		Classify each argument with 'category' T in a function call <code>f</code>
+		<!--
 		<ol style="font-size:18px">
 		  <li> T is a fundamental type </li>
 		  <li> T is a class type  </li>
@@ -397,7 +415,7 @@
 		  <li> T is a function type </li>
 		  <li> T is a pointer to a member function </li>
 		  <li> T is a pointer to a data member of a class X </li>
-		</ol>
+		</ol> -->
 	      </p>
 	    </section>		
 
@@ -440,14 +458,14 @@
 
 		namespace U {
 		  struct user_type : public L::lib_type { };
-		  void f(L::lib_type t) ;
+		  void f(L::lib_type t);
 		}
 		  
 		int main() {
 		  U::user_type t;
 		  f(t); //Diagnostic ambiguous
 		}
-	      </code></pre>
+	      </code></pre> <!---
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
 		  <li> E { lib_type, user_type } and N { L, U } </li>
@@ -455,7 +473,7 @@
 		  <li> Step 2. ADL finds { <code>L::f()</code>, <code>U::f()</code> } </li>
 		  <li> Therefore, it’s ambiguous by the overload resolution!</li>
 		</ul>
-	      </p>
+	      </p>-->
 	    </section>
 
 	    <section>
@@ -465,7 +483,7 @@
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
 		  <li> E is {T, if it's a class member-the member's class}
-		  <li >N is {innermost enclosing namespaces of its declaration} </li>
+		  <li> N is {innermost enclosing namespaces of its declaration} </li>
 		</ul>
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
@@ -474,19 +492,19 @@
 		      GREEN
 		    };
 		  
-		    f(color c) { };
+		    void f(color c) { };
 		  }
 
 		  void h() {
 		    f(N::GREEN); //ok, ADL finds N::f(color c)
 		  }
-	      </code></pre>
+	      </code></pre> <!--
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
 		  <li> E { color } </li>
 		  <li> N { N } </li>
 		  <li> Unqualified lookup finds nothing and U is empty, ADL finds { <code>N::f()</code> } </li>
-		</ul>
+		</ul> -->
 	      </p>
 	    </section>
 
@@ -509,13 +527,14 @@
 		   lib::MyType *foo = nullptr;
 		   f(foo); // ok
 		 }
-	      </code></pre>
+	      </code></pre> <!--
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
 		  <li> Unqualified lookup finds nothing. U is empty </li>
-		  <li> ADL finds, E { lib }, A is {<code>lib::f(MyType *ptr)</code>}
+		  <li> ADL finds, E {<code>lib::MyType</code>} and U { lib }.
+		    Therefore, A is {<code>lib::f(MyType *ptr)</code>}
 		</ul>
-	      </p>
+	      </p> -->
 	    </section>	    	    
 
 	    <section>
@@ -549,7 +568,7 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> N, E is { rule#5, x::} </li>
+		  <li> N, E is { rule#5, rule#2} </li>
 		</ul>
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
@@ -574,8 +593,7 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> E is {class itself, the class which is a member to(if any) and any indirect or direct base classes} </li>
-		  <li >N is {innermost enclosing namespaces of its associated entities} </li>
+		  <li> N,E is {rule #2, associated namespaces and entities of the member type} </li>
  		</ul>
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
@@ -607,14 +625,14 @@
 		  <!-- Intro to the terminology here -->
 		  <!-- What is a template specilization? What is instantiation? Discuss 
                        very briefly the terminology to avoid confusions <30sec -->
-		  <li> Terminology is important!
+		  <!-- <li> Terminology is important!
 		       Specialization, instantiation? Function template or template
-		       function? </li>
+		       function? </li> -->
 		  <li> How does ADL work for function templates? How does the compiler
 		       resolve a call to <code>f(arg)</code> where f is a function template? </li>
 		  <li> How does ADL work for arguments that are themselves templates? </li>
-		  <li> We need to revise the previous rules and consider
-		       dependent names </li>
+		  <!-- <li> We need to revise the previous rules and consider
+		       dependent names </li> -->
 		</ul>		
 	      </p>
 	    </section>
@@ -678,33 +696,40 @@
 		}
 	      </code></pre>
 	    </section>
-
+	    
 	    <section>
 	      <h5 style="font-size:32px" align="center">
 		Two phase lookup
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul style="font-size:18px"> <!--
 		  <li> Non dependent names (unqualified or qualified) are looked up with the rules we described </li> 
 		  <li> Unqualified dependent names are looked up using the unqualified lookup rules but they are not complete
-		    until the point of instantiation(POI) of the template. When the template is instantiated, unqualified
+		    until the point of instantiation(POI) of the template. -->
+		    <li> When the template is instantiated, unqualified
 		    dependent names undergo an ADL. For example: </li>
 		</ul>		
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
 		namespace N {
-		  struct foo {};
-
 		  template&lt;typename T&gt;
-		  void f(foo t) {}
+		  struct foo {};
+		
+		  template&lt;typename T&gt;
+		  void f(T t) {
+		    g(t);
+		  }
 		}
 
+		struct MyType {};
+		
 		template&lt;typename T&gt;
-		void g(foo t) {}
+		void g(T t) {}
 
 		void h() {
-		  f&lt;int&gt;(N::foo{}); //Is this valid?
-		  g&lt;int&gt;(N::foo{}); //Is this valid?
+		  g(N::foo&lt;int&gt;{});         //Is this valid? Case 1
+		  f(N::foo&lt;MyType&gt;{});      //Is this valid? Case 2
+		  f&lt;int&gt;(N::foo&lt;MyType&gt;{}); //Is this valid? Case 3		
 		}
 	      </code></pre>
 	    </section>
@@ -744,33 +769,33 @@
 
 	    <section>
 	      <h5 style="font-size:32px" align="center">
-		ADL bites 1: Unconstrained Templates and unspecified behaviour 
+		Bitten by ADL 1: Unconstrained Templates and unspecified behaviour 
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
-		  <li> What will the following code call? </li>
+		<ul style="font-size:18px">	
+	  <li> What will the following code call? </li>
 		  <li> Which canditates are fed to the overload resolution? </li>
 		  <li> Does this code look familiar? </li>
 		</ul>		
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
-		#include &lt;shared_ptr&gt;
+		#include &lt;memory&gt;
 		#include &lt;iostream&gt;
 
 		namespace lib {
-		  struct cont { };
+		  struct lib_type { };
 		}
 
 		namespace user {
-		  using my_type = std::shared_pointer<lib::cont>;
+		  using my_type = std::shared_ptrr&lt;lib::lib_type&gt;;
 
 		  void tie(my_type const& t1, my_type const& t2) {
 		    std::cout << "Unqualified look up finds me but...\n";
 		  }
 
 		  void oups() {
-		    auto t1 = std::make_shared<lib::cont>();
-		    auto t2 = std::make_shared<lib::cont>();
+		    auto t1 = std::make_shared&lt;lib::lib_type&gt;();
+		    auto t2 = std::make_shared&lt;lib::lib_type&gt;();
 		    tie(t1, t2);
 		  }
 		}
@@ -779,18 +804,19 @@
 		  user::oups();
 		}
 	      </code></pre>	
+	      <!--
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
 		  <li> Unqualified lookup finds <code>user::tie</code>. O is {user::tie} </li>
 		  <li> ADL finds <code>std::tie</code>. A is {std::tie} </li>
 		  <li> Overload resolution resolves <code>std::tie</code> as a better match </li>
 		</ul>		
-	      </p>      
+	      </p> -->
 	    </section>		    
 
 	    <section>
 	      <h5 style="font-size:32px" align="center">
-		ADL bites 2: another look on unspecified behavior 
+		Bittes by ADL 2: another look on unspecified behavior 
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
@@ -803,7 +829,7 @@
 
 		 namespace U {
 		   struct Customer { };		  
-		   using index = std::vector<Customer*>;
+		   using index = std::vector&lt;Customer&gt;;
 
 		   void copy(index const& idA, index const& idB, bool b) { }
 		    
@@ -816,7 +842,7 @@
 
 	    <section>
 	      <h5 style="font-size:32px" align="center">
-		ADL bites 3: iterators and algorithms 
+		Bitten by ADL 3: Iterators and Algorithms 
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
@@ -891,8 +917,24 @@
 		</ul>		
 	      </p>
 	    </section>
+	    <section>
+	      <h5> The two step dance: </h5>
+	      <pre><code class="c++" align="left" data-trim data-noescape>
+		#include&lt;algorithm&gt;
+		  namespace MyLib {
+		    template&lt;typename T&gt;
+		    struct foo {
+		      void my_operation(T a, T b) {
+		        using std::swap;
+		        swap(a, b);
+		      }
+		    };
+		  }
+	      </code></pre>
+	    </section>
 
 	    <section>
+	      <h5> Customization Points </h5>
 	      <pre><code class="c++" align="left" style="font-size:18px" data-trim data-noescape>
 		#include&lt;iostream&gt;
 		#include&lt;algorithm&gt;
@@ -910,15 +952,6 @@
   
 		  int m_i;
 		};
-	      </code></pre>	
-	    </section>
-
-	    <section>
-	      <pre><code class="c++" align="left" style="font-size:18px" data-trim data-noescape>
-		void fill_random_input(std::vector&lt;MyType&gt;& vec) {
-		  // Fill the vector with random numbers 
-		  // Impl details here...
-		}
 
 		/*
 		void swap(MyType& a, MyType& b) {
@@ -929,15 +962,11 @@
 		  auto v1 = std::vector&lt;MyType&gt;(10);
 		  auto v2 = std::vector&lt;MyType&gt;(10);  
 
-		  fill_random_input(v1);
-		  fill_random_input(v2);
+		  fill_random_input(v1, v2); //just a function the fills the vector
 
 		  using std::begin;
 		  using std::end;
-
-		  //print v1 v2
 		  std::swap_ranges(begin(v1), end(v1), begin(v2));
-		  //print v1 v2
 		}
 	      </code></pre>	
 	    </section>
@@ -1025,7 +1054,11 @@
 		
 	      </code></pre>	
 	    </section>
-	    
+	    <section>
+ 	      <p style="font-size:18px" align="center">
+		Thank you for listening! Any questions?
+	      </p>
+	    </section>
 	  </section>
 	  
       </div>
