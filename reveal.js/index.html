@@ -185,7 +185,7 @@
 	  </section>
 	</section>
 	<!-- History, when and why ADL-->
-	<section>
+ 	<section>
 	  <section>
 	  <h5 style="font-size:32px" align="center">
 	    History, when and why ADL
@@ -384,7 +384,7 @@
 	    
 	    <section> 
 	      <h5 style="font-size:32px" align="center">
-		Picking up the right name(s)
+		The two step process in detail
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
@@ -514,7 +514,7 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> U, E is { entities associated with X } </li>
+		  <li> N, E is { entities associated with X } </li>
 		</ul>
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
@@ -543,7 +543,7 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <li> E, N is { function parameter types, return type  } </li>
+		  <li> N, E is { function parameter types, return type  } </li>
 		</ul>
 	      </p>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
@@ -900,13 +900,16 @@
 		When generic code doesn't quite cut it: customization Points
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul style="font-size:18px"> <!--
 		  <li> Generic code shiped by libraries doesn't always work
 		       out of the box for types that are defined by the users
 		  </li>
 		  <li> For example, a library function like <code>std::swap_ranges()</code>,
 		       calls swap internally and must consider any user defined <code>swap()</code>
 		       for a user defined type T
+		  </li> -->
+		  <li> A library function like <code>std::swap_ranges()</code>,
+		       calls swap internally and must consider any user defined overload of <code>swap()</code>
 		  </li>
 		  <li> A library must assert:
 		    <ul style="font-size:18px">
@@ -920,15 +923,21 @@
 	    <section>
 	      <h5> The two step dance: </h5>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
-		#include&lt;algorithm&gt;
+		  #include&lt;algorithm&gt;
 		  namespace MyLib {
 		    template&lt;typename T&gt;
-		    struct foo {
-		      void my_operation(T a, T b) {
+		    struct retailer {
+		      void process(T a, T b) {
 		        using std::swap;
 		        swap(a, b);
 		      }
 		    };
+		  }
+
+		  void f(MyLib::retailer ret) {
+		    some_lib_type_t a;
+		    some_other_lib_type b;
+		    re.process(a, b);
 		  }
 	      </code></pre>
 	    </section>
@@ -962,7 +971,7 @@
 		  auto v1 = std::vector&lt;MyType&gt;(10);
 		  auto v2 = std::vector&lt;MyType&gt;(10);  
 
-		  fill_random_input(v1, v2); //just a function the fills the vector
+		  fill_random_input(v1, v2); //just a function that fills the vector
 
 		  using std::begin;
 		  using std::end;
