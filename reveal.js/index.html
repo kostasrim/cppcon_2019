@@ -106,8 +106,8 @@
 	      <h5 style="font-size:32px" >
 		Outline <br>
 		<ul style="font-size:18px";>
-		  <li class="fragment"> Presenter information </li>
-		  <li class="fragment"> History, when and why Argument Dependent Lookup(ADL)? </li>
+		  <li> Presenter information </li>
+		  <li class="fragment"> When and why Argument Dependent Lookup(ADL)? </li>
 		  <li class="fragment"> Name Taxonomy </li>
 		  <li class="fragment"> Templates and ADL </li>
 		  <li class="fragment"> Customization Points and Customization Point Objects(CPO) </li>
@@ -200,7 +200,7 @@
  	<section>
 	  <section>
 	    <h5 style="font-size:32px" align="center">
-	      History, when and why ADL
+	      When and why ADL?
 	    </h5>
 	    <p class="fragment" style="font-size:18px" align="left">
 	      We want to use the <code>operator<<</code> without explicitly calling it
@@ -232,21 +232,21 @@
 	      Q: Do we need ADL? </br>
               A: Yes, mainly for the following reasons:
               <ul style="font-size:18px">
-		<li class="fragment"> A call to an operator would need to be explicit </li> 
-		<li class="fragment">  C++ has non member functions </li>
+		<li class="fragment"> Without ADL we beat the purpose of operator overloading  </li> 
+		<li class="fragment"> C++ has non member functions </li>
 		<li class="fragment"> Templates </li> 
 	      </ul>
 	    </p>
 	    <aside class="notes">
 	      <p>
 		<ul>
-		  <li>Sometimes these functions are part of a type’s interface.
+		  <li> Sometimes these functions are part of a type’s interface.
 		    For a class object, we always know that the entity we refer
 		    to has a set of member functions which are defined in the encolsing scope of that
 		    particular class type. </li>
 		  <li> Therefore, we need a mechanism for associating non member
 		    functions that are a part of the type’s interface. </li>
-		  <li>As we shall see, templates undergo a process called two phase lookup which is ADL is fundamental.
+		  <li> As we shall see, templates undergo a process called two phase lookup which is ADL is fundamental.
 	            Without it, the usability of templates would be greatly reduced.
 		    On the contrary, uncostrained templates can be the source of weird errors(ADL bites). </li>
 	      </p>
@@ -260,18 +260,21 @@
  	      <h5 style="font-size:32px" align="center">
 		Name Taxonomy and name lookup in a nutshell
 	      </h5>
-	      <aside class="notes">
-		<p>
-		  <ul>
-		    <li>Name taxonomy is important because it allows the programmer to reason about their code and make
+	      <p style="font-size:18px" align="left">
+		<ul style="font-size:18px"> 
+		    <li class="fragment"> It's a two step process </li>
+		    <li class="fragment"> A name can be either qualified or unqualified and if it's a template,
+		     then it can also be dependent or nondependent </li>
+		  </ul> 
+		</p>
+		<aside class="notes">
+		    <li> Name taxonomy is important because it allows the programmer to reason about their code and make
 		      non intuitive cases clear and easy to understand/argue about </li>
 		    <li> Essentially, when the compiler sees a name, it must look it up somehow. The process of looking
 		      up that name depends on the name taxonomy that the entity referred belongs </li>
 		    <li> The standard defines name taxonomy in a non intutive way. But we can’t rely on the standard for
 		      a day to day programming. We can hopefully get away for the most cases by understanding the following 4
 		      categories </li> 
-		  </ul> 
-		</p>		
 	      </aside>
 	    </section>
 
@@ -286,28 +289,32 @@
 		<p style="font-size:18px" align="left"> 2. Overload resolution </p>
 	      </div>
 	      <br> <br> <br><br>
-	      <div class="box arrow-right">
-		<p style="font-size:18px" align="left"> Name referred is</p>
+	      <div class="fragment">
+		<div class="box arrow-right">
+		  <p style="font-size:18px" align="left"> Name referred is</p>
+		</div>
+		<div class="box arrow-right">
+		  <p style="font-size:18px" align="left"> Qualified </p>
+		</div>
+		<div class="box">
+		  <p style="font-size:18px" align="left"> Template? Dependent or Nondependent </p>
+		</div>
+		<br> <br> <br><br>		
 	      </div>
-	      <div class="box arrow-right">
-		<p style="font-size:18px" align="left"> Qualified </p>
-	      </div>
-	      <div class="box">
-		<p style="font-size:18px" align="left"> Template? Dependent or Nondependent </p>
-	      </div>	      	      
-	      <br> <br> <br><br>
-	      <div class="box arrow-right">
-		<p style="font-size:18px" align="left"> Name referred is </p>
-	      </div>
-	      <div class="box arrow-right">
-		<p style="font-size:18px" align="left"> Unqualified </p>
-	      </div>
-	      <div class="box">
-		<p style="font-size:18px" align="left"> Template? Dependent or Nondependent </p>
+	      <div class="fragment">	      
+		<div class="box arrow-right">
+		  <p style="font-size:18px" align="left"> Name referred is </p>
+		</div>
+		<div class="box arrow-right">
+		  <p style="font-size:18px" align="left"> Unqualified </p>
+		</div>
+		<div class="box">
+		  <p style="font-size:18px" align="left"> Template? Dependent or Nondependent </p>
+		</div>
 	      </div>
 	      <aside class="notes">
-		<p>
-		  <ul>
+		<p style="font-size:18px" align="left">
+		  <ul style="font-size:18px"> 
 		    <li> It's a two step process </li>
 		    <li> Name lookup controls overload resolution in a sense because... </li>
 		    <li> A name can be Unqualified and therefore the name is searched under the rules defined in... </li>
@@ -424,7 +431,7 @@
 		    If U contains:
 		<ul style="font-size:18px">
 		  <li> A declaration of a class member </li>
-		  <li> A block scope function declaration </li>
+		  <li> A block scope function declaration that is not a using declaration </li>
 		  <li> A declaration that is neither a function nor a function template </li>
 		</ul>
 		Then A is empty and the lookup does not proceed to step 2. </li>
@@ -1133,8 +1140,9 @@
 	      { src: 'plugin/notes/notes.js', async: true },
 	      { src: 'plugin/highlight/highlight.js', async: true }
 	  ],
-          slideNumber: true
-	  
+          slideNumber: true,
+	  width: 640,
+	  height: 480
       });
     </script>
   </body>
