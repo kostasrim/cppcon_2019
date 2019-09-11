@@ -743,7 +743,7 @@
 		
 		struct toy_factory {
 		  using value_type = toy;
-		  using iterator = std::vector&lt;T&gt;::iterator;
+		  using iterator = std::vector&lt;value_type&gt;::iterator;
 		};
 	      </code></pre>
 	    </section>
@@ -804,7 +804,8 @@
 		  template&lt;typename T&gt;
 		  class factory {
 		   public:
-		     friend void process(foo&lt;T&gt; v) { } 
+		     friend void process(factory f) { }
+		     //factory refers to the injected class name, that is, factory&ltT&gt;
 		  };
 		}
 
@@ -912,7 +913,7 @@
 		 int main() {
 		   int a[] = {1, 2, 3, 4};
 		   auto arr = std::array&lt;int, 4&gt;{ {1, 2, 3, 4} };
-		   auto v = std::vector&lt;int&gt;{ {1, 2, 3, 4} };
+		   auto vec = std::vector&lt;int&gt;{ {1, 2, 3, 4} };
 
 		   using std::begin;
 		   using std::end;
@@ -921,7 +922,7 @@
 
 		   find(a, a + 4, key);              //1
 		   find(begin(arr), end(arr), key);  //2
-		   find(begin(v), end(v), key);      //3
+		   find(begin(vec), end(vec), key);      //3
 		 }
 	      </code></pre>
 	    </section>
