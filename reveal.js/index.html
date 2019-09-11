@@ -336,15 +336,15 @@
 		</ul>
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
-		struct MyType {
-		  void member() { };
-		}
+		struct factory {
+		  void process() { };
+		};
 
 		void g() { };
 		
-		void f(MyType a) {
-		  a.member();
-		  a.g();  //Ill-formed no foo in X
+		void f(factory f) {
+		  f.process();
+		  f.g();  //Ill-formed no foo in X
 		}
 	      </code></pre>
 	      <aside class="notes">
@@ -392,15 +392,15 @@
 		</ul>
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
-		struct MyType {
-		  int member() { };
-		}
+		struct factory {
+		  int process() { };
+		};
 
 		void f() { };
 		
-		void g(X a) {
-		  member(); //Diagnostic: no f found
-		  f(); //ok ::f() called
+		void g(factory a) {
+		  process(); //Diagnostic: no f found
+		  f();       //ok ::f() called
 		}
 	      </code></pre>
 	    </section>	    
@@ -413,8 +413,8 @@
 		<ul style="font-size:18px">
 		  <li> For each argument type T in a function call there are two sets (each of size zero or more)
 		    <ul style="font-size:18px">
+		      <li> Set E (associated entities) </li>		      
 		      <li> Set N (associated namespaces) </li>
-		      <li> Set E (associated entities) </li>
 		    </ul>
 		    typedefs and using-declarations do not! contribute to this set  </li>
 		</ul>
@@ -484,24 +484,24 @@
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		namespace L {
-		  struct lib_type;
-		  void f(lib_type t);
+		  struct factory;
+		  void process(lib_type t);
 		}
 
 		namespace U {
-		  struct user_type : public L::lib_type { };
-		  void f(user_type t);
+		  struct user_factory : public L::factory { };
+		  void process(user_factory t);
 		}
 		  
 		int main() {
-		  U::user_type t;
-		  f(t); //Which are the canditates fed to the overload resolution?
+		  U::user_factory t;
+		  process(t); //Which are the canditates fed to the overload resolution?
 		}
 	      </code></pre>
 	      <p style="font-size:18px" align="left">
 		<ul class="fragment" style="font-size:18px">
 		  <li> Step 1. Unqualified lookup finds nothing U is empty </li>
-		  <li> Step 2. E { lib_type, user_type } and N { L, U }. ADL finds { <code>L::f()</code>, <code>U::f()</code> } </li>
+		  <li> Step 2. E { factory, user_factory } and N { L, U }. ADL finds { <code>L::process()</code>, <code>U::process()</code> } </li>
 		  <li> Overload resolution picks <code>U::f()</code> as a better match</li>
 		</ul>
 	      </p>
@@ -519,7 +519,7 @@
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		  namespace N {
-		    enum color { //works with enum class as well
+		    enum class color { 
 		      GREEN
 		    };
 		  
@@ -527,7 +527,7 @@
 		  }
 
 		  void h() {
-		    f(N::GREEN); //ok, ADL finds N::f(color c)
+		    f(N::color::GREEN); //ok, ADL finds N::f(color c)
 		  }
 	      </code></pre> 
 	      <p style="font-size:18px" align="left">
@@ -549,20 +549,20 @@
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace L {
-		   struct LibType { };
-		   void f(LibType *ptr) { }
+		   struct factory { };
+		   void process(factory *ptr) { }
 		 }
 
 		 void h() {
-		   L::LibType *foo = nullptr;
-		   f(foo); // ok
+		   L::factory *f = nullptr;
+		   process(f); // ok
 		 }
 	      </code></pre> 
 	      <p style="font-size:18px" align="left">
 		<ul class="fragment" style="font-size:18px">
 		  <li> Unqualified lookup finds nothing. U is empty </li>
-		  <li> ADL finds, E {<code>L::LibType</code>} and U { L }.
-		    Therefore, we feed {<code>L::f(LibType *ptr)</code>}
+		  <li> ADL finds, E {<code>L::factory</code>}, N {L}.
+		    Therefore, we feed {<code>L::process(factory *ptr)</code>}
 		    to the overload resolution </li>
 		</ul>
 	      </p>
@@ -579,11 +579,11 @@
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace L {
-		   struct LibType { };
-		   void f(void (*func)(LibType)) { };
+		   struct factory { };
+		   void process(void (*func)(factory)) { };
 		 }
 
-		 void custom(L::LibType t) {
+		 void custom(L::factory f) {
 		 //do something
 		 }
 
@@ -594,8 +594,8 @@
 	      <p style="font-size:18px" align="left">
 		<ul class="fragment" style="font-size:18px">
 		  <li> Unqualified lookup finds nothing. U is empty </li>
-		  <li> ADL finds, E {<code>L::LibType</code>} and U { L }.
-		    Therefore, A is {<code>L::f(LibType *ptr)</code>} </li>
+		  <li> ADL finds, E {<code>L::factory</code>}, N {L}.
+		    Therefore, A is {<code>L::process()</code>} </li>
 		</ul>
 	      </p>
 	    </section>
@@ -611,15 +611,15 @@
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace L {
-		   struct LibType {
-		     void f() { };
+		   struct factory {
+		     void process() { };
 		   };
 
-		   void g(void (LibType::* func)()) { };
+		   void g(void (factory::* func)()) { };
 		 }
 		 
 		 void h() {
-		   void (L::LibType::* fun)() = nullptr; 
+		   void (L::factory::* fun)() = nullptr; 
 		   g(fun); //ok
 		 }
 	      </code></pre>
@@ -636,15 +636,15 @@
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace L {
-		   struct LibType {
-		     int var = 0;
+		   struct factory {
+		     int outlets = 0;
 		   };
 		 
-		   void g(int LibType::* ptr) { };
+		   void g(int factory::* ptr) { };
 		 }
 		 
 		 void f() {
-		   int L::LibType::* ptr = nullptr;
+		   int L::factory::* ptr = nullptr;
 		   g(ptr); //ok
 		 }
 	      </code></pre>
