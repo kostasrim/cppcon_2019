@@ -113,7 +113,7 @@
 		  <li> Customization Points and Customization Point Objects(CPO) </li>
 		</ul>
 	      </h5>
-	      <p>I encourage Questions! </p>
+	      <p class="fragment">I encourage Questions! </p>
 	  </section>
 	<!--End of outline-->
 	</section>
@@ -134,7 +134,7 @@
 	            <li> Programming model that enables heterogeneous systems programming in single source C++ </li>
 		  </ul>
 		</li> -->
-		<li> Feel free to reach me out -- I am an easy going person </li>
+		<li class="fragment"> Feel free to reach me out -- I am an easy going person </li>
 		<!-- Why I am here? Teaching because... Please feel free to catch up with me....  --> 
 	      </ul>
 	    </p>
@@ -148,10 +148,10 @@
 	      <!--<li> "Employ your time in improving yourself by other men's writings, so that you shall gain easily what
 		  others have laboured hard for - Socrates" </li>  -->
 	      <ul style="font-size:18px">
-	      <li> Understand the fundamentals of ADL </li>
-	      <li> Make nonuntutive cases simple </li>
-	      <li> Discuss the common pitfalls and traps </li>
-	      <li> Generic code </li>
+	      <li class="fragment"> Understand the fundamentals of ADL </li>
+	      <li class="fragment"> Make nonuntutive cases simple </li>
+	      <li class="fragment"> Discuss the common pitfalls and traps </li>
+	      <li class="fragment"> Generic code </li>
 	    </ul>
 	  </p>
 	  </section>
@@ -190,12 +190,11 @@
 	  <h5 style="font-size:32px" align="center">
 	    History, when and why ADL
 	  </h5>
-	  <p style="font-size:18px" align="left">
-	    We want to use the <code>operator<<</code> without explicitly calling it with <code>std::operator&lt;&lt;</code>
-   					  as it brutally defeats the purpose of operator overloading
+	  <p class="fragment" style="font-size:18px" align="left">
+	    We want to use the <code>operator<<</code> without explicitly calling it like a function with <code>std::operator&lt;&lt;</code>
           </p>
 	  
-	  <pre><code class="c++" align="left" data-trim data-noescape>
+	  <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 	      #include &lt;iostream&gt;
 	      int main() {
 	        std::operator<<(std::cout, "Hello, World\n"); //Case 1
@@ -203,7 +202,7 @@
 	      }
 	  </code></pre>
 	 
-	  <p style="font-size:18px" align="left">	  
+	  <p class="fragment" style="font-size:18px" align="left">	  
 	  Had we not had a language feature (ADL), line 2 of the above code would be
 	  <font color="red">ill-formed</font>. Koenig Lookup was proposed for this matter
 	  (it only applied to operators) and later it was “extended” – the feature that is now known
@@ -216,9 +215,9 @@
 	    Q: Do we need ADL? </br>
             A: Yes, mainly for the following reasons:
             <ul style="font-size:18px">
-	      <li> A call to an operator would need to be explicit </li> <!--(i.e. it would look like a normal function  
+	      <li class="fragment"> A call to an operator would need to be explicit </li> <!--(i.e. it would look like a normal function  
 		call) which defeats the purpose of operator overloading all together -->
-	      <li> C++ has non member functions </li> <!--  and sometimes these functions are 
+	      <li class="fragment">  C++ has non member functions </li> <!--  and sometimes these functions are 
 		part of a type’s interface. For a class object, we always know that the entity we refer
 		to has a set of member functions which are defined in the encolsing scope of that
 		particular class type. Therefore, we need a mechanism for associating non member
@@ -229,7 +228,7 @@
 		  <li> 57. Keep a type and its nonmember function interface in the same namespace.</li>
 		  <li> 58. Keep types and functions in separate namespaces unless they’re specifically intended to work together. </li>
 		</ul> -->
-	      <li> Templates </li> <!-- As we shall see, templates undergo a process called two phase lookup which is ADL is fundamental.
+	      <li class="fragment"> Templates </li> <!-- As we shall see, templates undergo a process called two phase lookup which is ADL is fundamental.
 	           Without it, the usability of templates would be greatly reduced.
 		   On the contrary, uncostrained templates can be the source of weird errors(ADL bites). </li> -->
 	    </ul>
@@ -286,7 +285,7 @@
 		<p style="font-size:18px" align="left"> Name Lookup </p>
 	      </div>
 	      <div class="box arrow-right">
-		<p style="font-size:18px" align="left"> unqualified </p>
+		<p style="font-size:18px" align="left"> Unqualified </p>
 	      </div>
 	      <div class="box">
 		<p style="font-size:18px" align="left"> Template? Dependent or Nondependent </p>
@@ -307,16 +306,16 @@
 		  <li> The lookup scope is the scope implied by the qualified construct. For example: </li>
 		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		struct  X {
-		  void f() { };
+		  void member() { };
 		}
 
 		void g() { };
 		
 		void f(X a) {
-		  a.f();
-		  a.g();  //Error no foo in X
+		  a.member();
+		  a.g();  //Ill-formed no foo in X
 		}
 	      </code></pre>
 	    </section>
@@ -348,7 +347,7 @@
 		  <li> Perform the unqualified lookup by looking up in subsequent enclosing scopes. For example: </li>
 		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		struct  X {
 		  int foo() { };
 
@@ -424,12 +423,12 @@
 		1. T is a fundamental type
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul class="fragment" style="font-size:18px">
 		  <li> The set N, E are empty </li>
 		  <li> For example: </li>
 		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		namespace N {
 		  void f(int);
 		}
@@ -445,12 +444,12 @@
 		2. T is of a class type
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul class="fragment" style="font-size:18px">
 		  <li> E is {class itself, the class which is a member to(if any) and any indirect or direct base classes} </li>
 		  <li >N is {innermost enclosing namespaces of its associated entities} </li>
 		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		namespace L {
 		  struct lib_type;
 		  void f(lib_type t);
@@ -465,15 +464,14 @@
 		  U::user_type t;
 		  f(t); //Diagnostic ambiguous
 		}
-	      </code></pre> <!---
+	      </code></pre>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
-		  <li> E { lib_type, user_type } and N { L, U } </li>
+		<ul class="fragment" style="font-size:18px">
 		  <li> Step 1. Unqualified lookup finds nothing X is empty </li>
-		  <li> Step 2. ADL finds { <code>L::f()</code>, <code>U::f()</code> } </li>
+		  <li> Step 2. E { lib_type, user_type } and N { L, U }. ADL finds { <code>L::f()</code>, <code>U::f()</code> } </li>
 		  <li> Therefore, it’s ambiguous by the overload resolution!</li>
 		</ul>
-	      </p>-->
+	      </p>
 	    </section>
 
 	    <section>
@@ -481,12 +479,12 @@
 		3. T is an Enum 
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul class="fragment" style="font-size:18px">
 		  <li> E is {T, if it's a class member-the member's class}
 		  <li> N is {innermost enclosing namespaces of its declaration} </li>
 		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		  namespace N {
 		    enum color { //works with enum class as well
 		      GREEN
@@ -498,13 +496,12 @@
 		  void h() {
 		    f(N::GREEN); //ok, ADL finds N::f(color c)
 		  }
-	      </code></pre> <!--
+	      </code></pre> 
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
-		  <li> E { color } </li>
-		  <li> N { N } </li>
+		<ul class="fragment" style="font-size:18px">
+		  <li> E { color }, N { N } </li>
 		  <li> Unqualified lookup finds nothing and U is empty, ADL finds { <code>N::f()</code> } </li>
-		</ul> -->
+		</ul>
 	      </p>
 	    </section>
 
@@ -513,11 +510,11 @@
 		4. T is a pointer to X or an array of X
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul class="fragment" style="font-size:18px">
 		  <li> N, E is { entities associated with X } </li>
 		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace lib {
 		   struct MyType { };
 		   void f(MyType *ptr) { }
@@ -527,14 +524,14 @@
 		   lib::MyType *foo = nullptr;
 		   f(foo); // ok
 		 }
-	      </code></pre> <!--
+	      </code></pre> 
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul class="fragment" style="font-size:18px">
 		  <li> Unqualified lookup finds nothing. U is empty </li>
 		  <li> ADL finds, E {<code>lib::MyType</code>} and U { lib }.
-		    Therefore, A is {<code>lib::f(MyType *ptr)</code>}
+		    Therefore, A is {<code>lib::f(MyType *ptr)</code>} </li>
 		</ul>
-	      </p> -->
+	      </p>
 	    </section>	    	    
 
 	    <section>
@@ -542,11 +539,11 @@
 		5. T is a function type
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul class="fragment" style="font-size:18px">
 		  <li> N, E is { function parameter types, return type  } </li>
 		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace lib {
 		   struct MyType { };
 		   void f(void (*func)(MyType)) { };
@@ -565,13 +562,13 @@
 	    <section>
 	      <h5 style="font-size:32px" align="center">
 		6. T is a pointer to a member function of a class X 
-	      </h5>
+	      </h5> 
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+		<ul class="fragment" style="font-size:18px">
 		  <li> N, E is { rule#5, rule#2} </li>
 		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace lib {
 		   struct MyType {
 		     void f() { };
@@ -591,12 +588,12 @@
 	      <h5 style="font-size:32px" align="center">
 		7. T is a pointer to a data member of a class X 
 	      </h5>
-	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
+	      <p class="fragment" style="font-size:18px" align="left">
+		<ul class="fragment" style="font-size:18px">
 		  <li> N,E is {rule #2, associated namespaces and entities of the member type} </li>
  		</ul>
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace lib {
 		   struct MyType {
 		     int var = 0;
@@ -651,7 +648,7 @@
 		  </li>
 		</ul>		
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace L {
 		   template&lt;typename T&gt;
 		   struct foo {};  
@@ -682,7 +679,7 @@
 		  <li> Which of the following using declarations are type dependent? </li>
 		</ul>		
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		#include&lt;vector&gt;
 
 		template&lt;typename T&gt;
@@ -710,7 +707,7 @@
 		    dependent names undergo an ADL. For example: </li>
 		</ul>		
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		namespace N {
 		  template&lt;typename T&gt;
 		  struct foo {};
@@ -747,7 +744,7 @@
 		  <li> Dependent friends can be found by ADL. For example: </li> 
 		</ul>		
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		namespace N {
 		  template&lt;typename T&gt;
 		  class foo {
@@ -778,7 +775,7 @@
 		  <li> Does this code look familiar? </li>
 		</ul>		
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		#include &lt;memory&gt;
 		#include &lt;iostream&gt;
 
@@ -824,7 +821,7 @@
 		  <li> The following attempt might lead to surprises </li>
 		</ul>		
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 #include &lt;vector&gt;
 
 		 namespace U {
@@ -850,7 +847,7 @@
 		  <li> The following attempt might lead to surprises </li>
 		</ul>		
 	      </p>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
+	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 #include &lt;algorithm&gt;
 		 #include &lt;array&gt;		    
 		 #include &lt;vector&gt;
