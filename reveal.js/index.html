@@ -703,18 +703,18 @@
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		 namespace L {
 		   template&lt;typename T&gt;
-		   struct foo {};  
+		   struct factory {};  
 		 }
 
 		 namespace U {
-		  struct user_type { };
+		  struct toys { };
 
 		  template&lt;typename... Args&gt;
 		  void match_anything(Args&&... arg) {}
 		 }
 
 		 void g() {
-		   match_anything(L::foo&lt;U::user_type&gt;{}); //ok
+		   match_anything(L::factory&lt;U::toys&gt;{}); //ok
 		 }
 	      </code></pre>
 	      
@@ -735,13 +735,15 @@
 		#include&lt;vector&gt;
 
 		template&lt;typename T&gt;
-		struct foo {
-		  using it = typename std::vector&lt;T&gt;::iterator;
+		struct factory {
+		  using iterator = typename std::vector&lt;T&gt;::iterator;
 		}
 
-		struct FooBar {
-		  using T = int;
-		  using it = std::vector&lt;T&gt;::iterator;
+		struct toy { };
+		
+		struct toy_factory {
+		  using value_type = toy;
+		  using iterator = std::vector&lt;T&gt;::iterator;
 		};
 	      </code></pre>
 	    </section>
@@ -759,23 +761,21 @@
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		namespace N {
 		  template&lt;typename T&gt;
-		  struct foo {};
+		  struct factory {};
 		
 		  template&lt;typename T&gt;
-		  void f(T t) {
-		    g(t);
+		  void process(T t) {
+		    print_outlet(t); //unqualified lookup  finds nothing
 		  }
 		}
 
-		struct MyType {};
+		struct toy {};
 		
-		template&lt;typename T&gt;
-		void g(T t) {}
+		void print_outlet(N::factory<toy> f) { }
 
 		void h() {
-		  g(N::foo&lt;int&gt;{});         //Is this valid? Case 1
-		  f(N::foo&lt;MyType&gt;{});      //Is this valid? Case 2
-		  f&lt;int&gt;(N::foo&lt;MyType&gt;{}); //Is this valid? Case 3		
+		  process(N::factory&lt;toy&gt;{});            //Is this valid? Case 1
+		  process&lt;int&gt;(N::factory&lt;toy&gt;{}); //Is this valid? Case 2		
 		}
 	      </code></pre>
 	      <aside class="notes">
@@ -802,15 +802,15 @@
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		namespace N {
 		  template&lt;typename T&gt;
-		  class foo {
+		  class factory {
 		   public:
-		     friend void f(foo&lt;T&gt; v) { } 
+		     friend void process(foo&lt;T&gt; v) { } 
 		  };
 		}
 
 		void h() {
-		  N::foo&lt;int&gt; obj;
-		  f(obj);
+		  N::factory&lt;int&gt; obj;
+		  process(obj);
 		}
 	      </code></pre>
 	      <aside class="notes">
