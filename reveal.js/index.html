@@ -774,7 +774,7 @@
 		void print_outlet(N::factory<toy> f) { }
 
 		void h() {
-		  process(N::factory&lt;toy&gt;{});            //Is this valid? Case 1
+		  process(N::factory&lt;toy&gt;{});      //Is this valid? Case 1
 		  process&lt;int&gt;(N::factory&lt;toy&gt;{}); //Is this valid? Case 2		
 		}
 	      </code></pre>
@@ -836,33 +836,23 @@
 	      </p>
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		#include &lt;memory&gt;
-		#include &lt;iostream&gt;
-
-		namespace lib {
-		  struct lib_type { };
-		}
-
 		namespace user {
- 		  using my_type = std::shared_ptr&lt;lib::lib_type&gt;;
+		  struct user_type {};
+		  using my_type = std::shared_ptr&lt;user_type&gt;;
 
 		  void tie(my_type const& t1, my_type const& t2) {
-		    std::cout << "Unqualified look up finds me but...\n";
 		  }
 
 		  void oups() {
-		    auto t1 = std::make_shared&lt;lib::lib_type&gt;();
-		    auto t2 = std::make_shared&lt;lib::lib_type&gt;();
+		    auto t1 = std::make_shared&lt;user_type&gt;();
+		    auto t2 = std::make_shared&lt;user_type&gt;();
 		    tie(t1, t2);
 		  }
-		}
-			
-		int main() {
-		  user::oups();
 		}
 	      </code></pre>	
 	      <p style="font-size:18px" align="left">
 		<ul class="fragment" style="font-size:18px">
-		  <li> Unqualified lookup finds <code>user::tie</code>. O is {user::tie} </li>
+		  <li> U {user::tie} </li>
 		  <li> ADL finds <code>std::tie</code>. A is {std::tie} </li>
 		  <li> Overload resolution resolves <code>std::tie</code> as a better match </li>
 		</ul>		
@@ -1142,8 +1132,8 @@
 	      { src: 'plugin/highlight/highlight.js', async: true }
 	  ],
           slideNumber: true,
-	  width: 640,
-	  height: 480
+	  width: 1024,
+	  height: 768
       });
     </script>
   </body>
