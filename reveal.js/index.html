@@ -999,7 +999,6 @@
 		#include&lt;iostream&gt;
 		#include&lt;algorithm&gt;
 		#include&lt;vector&gt;
-		#include&lt;random&gt;
 
 		struct MyType {
 		  friend bool operator&lt;(const MyType& a, const MyType& b) {
@@ -1009,7 +1008,7 @@
 		  friend std::ostream& operator&lt;&lt;(std::ostream& os, const MyType& obj) {
 		    return os &lt;&lt; obj.m_i;
 		  }
-  
+    
 		  int m_i;
 		};
 
@@ -1048,67 +1047,66 @@
 	      <pre><code class="c++" align="left" style="font-size:18px" data-trim data-noescape>
 		 namespace lib {
 		   namespace detail {
-		      struct no_adl_tag { };
+		     struct no_adl_tag { };
 
-		       //disable std::swap locally
-		       template &lt;typename T&gt;
-		       no_adl_tag swap(T&& a, T&& b) = delete;
+		     //disable std::swap locally
+		     template &lt;typename T&gt;
+		     no_adl_tag swap(T&& a, T&& b) = delete;
     
-		       //if there is any user defined overload
-		       template &lt;typename T&gt;
-		       decltype(super_swap(std::declval&lt;T&gt;(), std::declval&lt;T&gt;()))
-		       try_to_swap(int);
+		     //if there is any user defined overload
+		     template &lt;typename T&gt;
+		     decltype(swap(std::declval&lt;T&gt;(), std::declval&lt;T&gt;()))
+		     try_to_swap(int);
 
-		       //fallback, i.e. no user overload found
-		       template &lt;typename T&gt;
-		       no_adl_tag try_to_swap(long);
+		     //fallback, i.e. no user overload found
+		     template &lt;typename T&gt;
+		     no_adl_tag try_to_swap(long);
 
-		       template &lt;typename T&gt;
-		       inline constexpr bool is_adl_super_swapable =
-		       !std::is_same_v&lt;decltype(detail::try_to_swap&lt;T&gt;(42)) , no_adl_tag&gt;;
+		     template &lt;typename T&gt;
+		     inline constexpr bool is_adl_swappable =
+		       !std::is_same_v&lt;decltype(detail::try_to_swap&lt;T&gt;(42)),
+		                                no_adl_tag&gt;;
 
-		       struct super_swap_fn {
-		         //Enable me there is a user defined overload of swap
-		         template&lt;typename T&gt;
-		         constexpr std::enable_if_t&lt;detail::is_adl_super_swapable&lt;T&gt;&gt;
-		         operator()(T&& t1, T&& t2) const {
-		           std::cout &lt;&lt; "indirection\n";
- 		           return super_swap(std::forward&lt;T&gt;(t1),
-                                             std::forward&lt;T&gt;(t2));
-		         }
+		     struct swap_fn {
+		       //Enable me there is a user defined overload of swap
+		       template&lt;typename T&gt;
+		       constexpr std::enable_if_t&lt;detail::is_adl_swappable&lt;T&gt;&gt;
+		       operator()(T&& t1, T&& t2) const {
+ 		         return swap(std::forward&lt;T&gt;(t1),
+		                      std::forward&lt;T&gt;(t2));
+		       }
 	      </code></pre>
 	    </section>
 	    <section>
 	      <pre><code class="c++" align="left" style="font-size:18px" data-trim data-noescape>	      
 		       //Otherwise fallback to the generic case which is std::swap
 		       template&lt;typename T&gt;
-		       constexpr std::enable_if_t&lt;!detail::is_adl_super_swapable&lt;T&gt;&gt;
+		       constexpr std::enable_if_t&lt;!detail::is_adl_swappable&lt;T&gt;&gt;
 		       operator()(T&& t1, T&& t2) const {
 		         //fallback for std::swap
-		         std::cout &lt;&lt; "fallback std::swap\n";
 		         return std::swap(std::forward&lt;T&gt;(t1),
-		         std::forward&lt;T&gt;(t2));
+		                          std::forward&lt;T&gt;(t2));
 		        } 
 		      };
 		    } //namespace detail 
-		    //super_swap is a CPO. Inline constexpr allows multiple definitions		    
-		    //of super_swap in different translation units.
-		    inline constexpr auto super_swap = detail::super_swap_fn();
+		    //swap is a CPO. Inline constexpr allows multiple definitions		    
+		    //of swap in different translation units.
+		    inline constexpr auto swap = detail::swap_fn();
 		  } //namespace lib
 
 		  namespace user {
 		    struct MyType {};
 
-		    void super_swap(MyType& t1, MyType& t2) {
-		      std::cout &lt;&lt; "I am a CPO\n";
-		    }
+		    void swap(MyType& t1, MyType& t2) { }
 
 		    void f() {
 		      MyType t1, t2;
-		      auto v = std::vector&lt;MyType&gt;(3);
-		      //using lib::super_swap;
-		      lib::super_swap(t1, t2);
-		      //std::for_each(v.begin(), v.end(), super_swap);
+		      auto v1 = std::vector&lt;MyType&gt;(3);
+		      //auto v2 = std::vector&lt;MyType&gt;(3);
+		      //using lib::swap;
+		      lib::swap(t1, t2);
+		      //std::some_algo(begin(v1), end(v1),
+		      //               begin(v2), end(v2), swap);
 		   }
 		 } //namespace user 
 		
