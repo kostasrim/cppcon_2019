@@ -262,7 +262,6 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px"> 
-		    <li class="fragment"> It's a two step process </li>
 		    <li class="fragment"> A name can be either qualified or unqualified and if it's a template,
 		     then it can also be dependent or nondependent </li>
 		  </ul> 
@@ -398,7 +397,7 @@
 
 		void f() { };
 		
-		void g(factory a) {
+		void g() {
 		  process(); //Diagnostic: no f found
 		  f();       //ok ::f() called
 		}
@@ -485,7 +484,7 @@
 	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
 		namespace L {
 		  struct factory;
-		  void process(lib_type t);
+		  void process(factory t);
 		}
 
 		namespace U {
@@ -502,7 +501,7 @@
 		<ul class="fragment" style="font-size:18px">
 		  <li> Step 1. Unqualified lookup finds nothing U is empty </li>
 		  <li> Step 2. E { factory, user_factory } and N { L, U }. ADL finds { <code>L::process()</code>, <code>U::process()</code> } </li>
-		  <li> Overload resolution picks <code>U::f()</code> as a better match</li>
+		  <li> Overload resolution picks <code>U::process()</code> as a better match</li>
 		</ul>
 	      </p>
 	    </section>
@@ -588,7 +587,7 @@
 		 }
 
 		 void h() {
-		   f(custom); // ok
+		   process(custom); // ok
 		 }
 	      </code></pre>
 	      <p style="font-size:18px" align="left">
@@ -640,12 +639,12 @@
 		     int outlets = 0;
 		   };
 		 
-		   void g(int factory::* ptr) { };
+		   void process(int factory::* ptr) { };
 		 }
 		 
 		 void f() {
 		   int L::factory::* ptr = nullptr;
-		   g(ptr); //ok
+		   process(ptr); //ok
 		 }
 	      </code></pre>
 	      <aside class="notes">
@@ -666,13 +665,14 @@
 	      <h5 style="font-size:32px" align="center">
 		Templates and ADL
 	      </h5>
+	      <!--
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
 		  <li> How does ADL work for function templates? How does the compiler
 		       resolve a call to <code>f(arg)</code> where f is a function template specialization? </li>
 		  <li> How does ADL work for arguments that are themselves templates? </li>
 		</ul>		
-	      </p>
+	      </p> -->
 	      <aside class="notes">
 		<p>
 		  <ul>
@@ -771,7 +771,7 @@
 
 		struct toy {};
 		
-		void print_outlet(N::factory<toy> f) { } //What if the parameter is an int?
+		void print_outlet(N::factory&lttoy&gt f) { } //What if the parameter is an int?
 
 		void h() {
 		  process(N::factory&lt;toy&gt;{});      //Is this valid? Case 1
@@ -822,6 +822,27 @@
 		</p>
 	      </aside>
 	    </section>
+	    <section>
+	      <h5> The two step dance: </h5>
+	      <pre><code class="c++" align="left" data-trim data-noescape>
+		  #include&lt;algorithm&gt;
+		  namespace U {
+		    template&lt;typename T&gt;
+		    struct factory {
+		      void process(T a, T b) {
+		        using std::swap;
+		        swap(a, b);
+		      }
+		    };
+		  }
+
+		  void f(U::factory outlet) {
+		    some_lib_type_t a;        //type included from a library
+		    some_other_lib_type b;    //type included from a library
+		    outlet.process(a, b);
+		  }
+	      </code></pre>
+	    </section>
 
 	    <section>
 	      <h5 style="font-size:32px" align="center">
@@ -861,33 +882,7 @@
 
 	    <section>
 	      <h5 style="font-size:32px" align="center">
-		Bitten by ADL 2: another look on unspecified behavior 
-	      </h5>
-	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px">
-		  <!-- provide the general idea -->
-		  <li> The following attempt might lead to surprises </li>
-		</ul>		
-	      </p>
-	      <pre class="fragment"><code class="c++" align="left" data-trim data-noescape>
-		 #include &lt;vector&gt;
-
-		 namespace U {
-		   struct Customer { };		  
-		   using index = std::vector&lt;Customer&gt;;
-
-		   void copy(index const& idA, index const& idB, bool b) { }
-		    
-		   void g(index const& id) {
-		     copy(id, id, false):
-		   }
-		 }
-	      </code></pre>
-	    </section>
-
-	    <section>
-	      <h5 style="font-size:32px" align="center">
-		Bitten by ADL 3: Iterators and Algorithms 
+		Bitten by ADL 2: Iterators and Algorithms 
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
@@ -946,10 +941,10 @@
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px"> 
-		  <li> A library function like <code>std::swap_ranges()</code>,
+		  <li class="fragment"> A library function like <code>std::swap_ranges()</code>,
 		       calls swap internally and must consider any user defined overload of <code>swap()</code>
 		  </li>
-		  <li> A library must assert:
+		  <li class="fragment"> A library must assert:
 		    <ul style="font-size:18px">
 		      <li> General cases are covered intuitevly </li>
 		      <li> Delegate the behaviour to the user when required. The hooking point </li>
@@ -971,28 +966,7 @@
 		</p>
 	      </aside>
 	    </section>
-	    <section>
-	      <h5> The two step dance: </h5>
-	      <pre><code class="c++" align="left" data-trim data-noescape>
-		  #include&lt;algorithm&gt;
-		  namespace U {
-		    template&lt;typename T&gt;
-		    struct factory {
-		      void process(T a, T b) {
-		        using std::swap;
-		        swap(a, b);
-		      }
-		    };
-		  }
-
-		  void f(U::factory outlet) {
-		    some_lib_type_t a;        //type included from a library
-		    some_other_lib_type b;    //type included from a library
-		    outlet.process(a, b);
-		  }
-	      </code></pre>
-	    </section>
-
+	    
 	    <section>
 	      <h5> Customization Points </h5>
 	      <pre><code class="c++" align="left" style="font-size:18px" data-trim data-noescape>
@@ -1029,18 +1003,20 @@
 		}
 	      </code></pre>	
 	    </section>
+	    
 	    <section>
 	      <h5 style="font-size:32px" align="center">
 		When customization points don't quite cut it: enter customization point objects!
 	      </h5>
 	      <p style="font-size:18px" align="left">
 		<ul style="font-size:18px">
-		  <!-- a library solution for a language feature problem -- Thanks Chris ;) -->
-		  <li> It's a design pattern </li>
-		  <li> Customization point objects are function objects that perform ADL
-		    on users behalf </li>
-		</ul>		
-	      </p>
+		  <li class="fragment"> It's a design pattern </li>
+		  <li class="fragment"> Customization point objects are function objects that perform ADL on users behalf </li>
+		</ul>
+              </p>
+	      <aside class="notes">
+		<p> It's a library solution for a library problem </p>
+	      </aside>
 	    </section>
 	    
 	    <section>
