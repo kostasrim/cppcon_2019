@@ -771,7 +771,7 @@
 
 		struct toy {};
 		
-		void print_outlet(N::factory<toy> f) { }
+		void print_outlet(N::factory<toy> f) { } //What if the parameter is an int?
 
 		void h() {
 		  process(N::factory&lt;toy&gt;{});      //Is this valid? Case 1
@@ -912,7 +912,7 @@
 
 		   find(a, a + 4, key);              //1
 		   find(begin(arr), end(arr), key);  //2
-		   find(begin(vec), end(vec), key);      //3
+		   find(begin(vec), end(vec), key);  //3
 		 }
 	      </code></pre>
 	    </section>
@@ -945,14 +945,7 @@
 		When generic code doesn't quite cut it: customization Points
 	      </h5>
 	      <p style="font-size:18px" align="left">
-		<ul style="font-size:18px"> <!--
-		  <li> Generic code shiped by libraries doesn't always work
-		       out of the box for types that are defined by the users
-		  </li>
-		  <li> For example, a library function like <code>std::swap_ranges()</code>,
-		       calls swap internally and must consider any user defined <code>swap()</code>
-		       for a user defined type T
-		  </li> -->
+		<ul style="font-size:18px"> 
 		  <li> A library function like <code>std::swap_ranges()</code>,
 		       calls swap internally and must consider any user defined overload of <code>swap()</code>
 		  </li>
@@ -964,14 +957,27 @@
 		  </li>
 		</ul>		
 	      </p>
+	      <aside class="notes">
+		<p>
+		  <ul> 
+		    <li> Generic code shiped by libraries doesn't always work
+		      out of the box for types that are defined by the users
+		    </li>
+		    <li> For example, a library function like <code>std::swap_ranges()</code>,
+		      calls swap internally and must consider any user defined <code>swap()</code>
+		      for a user defined type T
+		    </li>
+		  </ul>
+		</p>
+	      </aside>
 	    </section>
 	    <section>
 	      <h5> The two step dance: </h5>
 	      <pre><code class="c++" align="left" data-trim data-noescape>
 		  #include&lt;algorithm&gt;
-		  namespace MyLib {
+		  namespace U {
 		    template&lt;typename T&gt;
-		    struct retailer {
+		    struct factory {
 		      void process(T a, T b) {
 		        using std::swap;
 		        swap(a, b);
@@ -979,10 +985,10 @@
 		    };
 		  }
 
-		  void f(MyLib::retailer ret) {
-		    some_lib_type_t a;
-		    some_other_lib_type b;
-		    re.process(a, b);
+		  void f(U::factory outlet) {
+		    some_lib_type_t a;        //type included from a library
+		    some_other_lib_type b;    //type included from a library
+		    outlet.process(a, b);
 		  }
 	      </code></pre>
 	    </section>
